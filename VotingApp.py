@@ -9,7 +9,11 @@ from PyQt6.QtCore import Qt
 
 
 class VotingApp(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initializes the VotingApp class.
+        Sets up the UI, loads or creates the votes.csv file, and connects buttons to their respective functions.
+        """
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -28,22 +32,26 @@ class VotingApp(QMainWindow):
         self.display_id_label.setGeometry(80, 140, 260, 20)
         self.display_id_label.show()
 
-        # Vote confirmation label
-        #self.vote_confirmation_label = QLabel("", self)
-        #self.vote_confirmation_label.setGeometry(20, 360, 260, 20)
-        #self.vote_confirmation_label.show()
-
         # Connect buttons to their functions
         self.ui.VoteButton.clicked.connect(self.cast_vote)
         self.ui.ResultsButton.clicked.connect(self.show_results)
 
-    def create_csv_if_not_exists(self):
+    def create_csv_if_not_exists(self) -> None:
+        """
+        Creates the votes.csv file if it does not already exist.
+        Writes the header row to the file.
+        """
         if not os.path.exists(self.data_manager.file_name):
             with open(self.data_manager.file_name, mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(["Voter ID", "Candidate"])
 
-    def cast_vote(self):
+    def cast_vote(self) -> None:
+        """
+        Handles the vote-casting process.
+        Validates the voter ID and candidate selection, checks if the voter has already voted,
+        and records the vote if all conditions are met.
+        """
         voter_id = self.ui.textEdit.toPlainText().strip()
         candidate = "John" if self.ui.JohnButton.isChecked() else "Jane" if self.ui.JaneButton.isChecked() else None
         self.ui.results_display.setStyleSheet("color: green;")
@@ -76,7 +84,11 @@ class VotingApp(QMainWindow):
         self.ui.results_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ui.textEdit.clear()
 
-    def show_results(self):
+    def show_results(self) -> None:
+        """
+        Displays the voting results.
+        Shows the number of votes each candidate has received.
+        """
         results = self.data_manager.get_results()
         if not results:
             self.ui.results_display.setText("No votes have been cast yet.")
@@ -86,10 +98,6 @@ class VotingApp(QMainWindow):
         results_text = "\n".join([f"{candidate}: {count} votes" for candidate, count in results.items()])
         self.ui.results_display.setText(results_text)
         self.ui.results_display.setStyleSheet("color: green;")
-
-
-
-
 
 
 if __name__ == "__main__":
