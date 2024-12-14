@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         self.VoteButton.setObjectName("VoteButton")
 
         self.ResultsButton = QtWidgets.QPushButton(self.centralwidget)
-        self.ResultsButton.setGeometry(QtCore.QRect(90, 350, 101, 31))
+        self.ResultsButton.setGeometry(QtCore.QRect(90, 350, 101, 35))
         self.ResultsButton.setFont(QtGui.QFont("Arial", 12))
         self.ResultsButton.setObjectName("ResultsButton")
 
