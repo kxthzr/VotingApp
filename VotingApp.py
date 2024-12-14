@@ -2,7 +2,7 @@ import sys
 import os
 import csv
 import random
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QMessageBox, QButtonGroup
 from VotingApp_ui import Ui_MainWindow
 from data_manager import DataManager
 from PyQt6.QtCore import Qt
@@ -10,16 +10,17 @@ from PyQt6.QtCore import Qt
 
 class VotingApp(QMainWindow):
     def __init__(self) -> None:
-        """
-        Initializes the VotingApp class.
-        Sets up the UI, loads or creates the votes.csv file, and connects buttons to their respective functions.
-        """
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.data_manager = DataManager("votes.csv")
         self.create_csv_if_not_exists()
+
+        # Group the radio buttons
+        self.radio_button_group = QButtonGroup(self)
+        self.radio_button_group.addButton(self.ui.JohnButton)
+        self.radio_button_group.addButton(self.ui.JaneButton)
 
         # Instruction label
         self.instruction_label = QLabel("Enter the ID number to vote.", self)
@@ -57,32 +58,40 @@ class VotingApp(QMainWindow):
         self.ui.results_display.setStyleSheet("color: green;")
 
         if not voter_id.isdigit():
-            self.ui.results_display.setText("Invalid ID format.\nPlease enter numbers only.")
+            self.ui.results_display.setText(
+                "<p style='text-align: center;'>Invalid ID format. Please enter numbers only.")
             self.ui.results_display.setStyleSheet("color: red;")
             return
 
         if voter_id != self.predefined_id:
-            self.ui.results_display.setText(f"Invalid ID. Please enter your ID provided.")
+            self.ui.results_display.setText(
+                f"<p style='text-align: center;'>Invalid ID. Please enter your ID provided.")
             self.ui.results_display.setStyleSheet("color: red;")
             return
 
         if not candidate:
-            self.ui.results_display.setText("Please select a candidate to vote for.")
+            self.ui.results_display.setText("<p style='text-align: center;'>Please select a candidate to vote for.")
             self.ui.results_display.setStyleSheet("color: red;")
             self.ui.results_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return
 
         if self.data_manager.has_voted(voter_id):
-            self.ui.results_display.setText(f"ID {voter_id} has already voted.")
+            self.ui.results_display.setText(f"<p style='text-align: center;'>ID {voter_id} has already voted.")
             self.ui.results_display.setStyleSheet("color: red;")
             self.ui.results_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return
 
         self.data_manager.record_vote(voter_id, candidate)
-        self.ui.results_display.setText(f"Your vote for {candidate} has been recorded.")
-        self.ui.results_display.setStyleSheet("color: green;")
+        self.ui.results_display.setText(f"<p style='text-align: center;'>Your vote for {candidate} has been recorded.")
+        self.ui.results_display.setStyleSheet("color: green; font-weight: bold; ")
         self.ui.results_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ui.textEdit.clear()
+
+        # Unselect radio buttons after voting
+        self.radio_button_group.setExclusive(False)
+        self.ui.JohnButton.setChecked(False)
+        self.ui.JaneButton.setChecked(False)
+        self.radio_button_group.setExclusive(True)
 
     def show_results(self) -> None:
         """
@@ -95,7 +104,7 @@ class VotingApp(QMainWindow):
             self.ui.results_display.setStyleSheet("color: red;")
             return
 
-        results_text = "\n".join([f"{candidate}: {count} votes" for candidate, count in results.items()])
+        results_text = "\n".join([f"<p style='text-align: center;'>{candidate}: {count} votes" for candidate, count in results.items()])
         self.ui.results_display.setText(results_text)
         self.ui.results_display.setStyleSheet("color: green;")
 
