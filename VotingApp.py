@@ -112,9 +112,3 @@ class VotingApp(QMainWindow):
         self.ui.results_display.setText(results_text)
         self.ui.results_display.setStyleSheet("color: green;")
 
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    main_window = VotingApp()
-    main_window.show()
-    sys.exit(app.exec())
