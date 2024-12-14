@@ -10,6 +10,10 @@ from PyQt6.QtCore import Qt
 
 class VotingApp(QMainWindow):
     def __init__(self) -> None:
+        """
+        Initializes the VotingApp class.
+        Sets up the UI, groups the radio buttons, and connects button signals to their respective methods.
+        """
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
